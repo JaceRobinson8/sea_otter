@@ -1,0 +1,473 @@
+{
+    "type": "bundle",
+    "id": "bundle--dabeeefc-958f-4aa0-9310-2910229e5da8",
+    "objects": [
+        {
+            "type": "identity",
+            "spec_version": "2.1",
+            "id": "identity--8e112e72-aa8f-4190-a359-28a9abae2896",
+            "created_by_ref": "identity--42ac3c92-60d2-418f-ba8e-838944e6110b",
+            "created": "2023-04-12T17:53:09.646Z",
+            "modified": "2023-04-12T17:53:09.646Z",
+            "name": "GeminiProduction_CMA",
+            "description": "Cybersecurity and Infrastructure Security Agency Production Identity. Code and Media Analysis.",
+            "identity_class": "system",
+            "confidence": 100,
+            "lang": "en",
+            "object_marking_refs": [
+                "marking-definition--bab4a63c-aed9-4cf5-a766-dfca5abac2bb"
+            ]
+        },
+        {
+            "type": "file",
+            "spec_version": "2.1",
+            "id": "file--da38c7f9-5935-5680-8bd6-08cf5f388735",
+            "hashes": {
+                "MD5": "f899d6cbe1be6395a0fa2a802b8eb579",
+                "SHA-1": "e5f29cac0570665bc12f54a7e1894f139cc7b45e",
+                "SHA-256": "ea98368f6ecb5281654a6a9e4c649ef9b53860f1ee32340145b61e0e42e1072a",
+                "SHA-512": "6a9c23c3bd8a4b5f7301b80b7187ed6ae055a4e05e2b817800ddade99cb45e50bf3a96a57f9593aa8dfb49934ea48dba722ba3f4b0e8a8a634e6c86da335dcba",
+                "SSDEEP": "96:8byUcBL9vPh8onLQKwz9UL0wJ0v7R/+B3Oam8WgbVxzbiMhrhRrwSLpVt8lTHGk4:icBL9vFnL1wzGL0tt/cVxzvhrhRZl4hO"
+            },
+            "size": 5934,
+            "name": "sd.php",
+            "object_marking_refs": [
+                "marking-definition--94868c89-83c2-464b-929b-a1a8aa3c8487"
+            ]
+        },
+        {
+            "type": "indicator",
+            "spec_version": "2.1",
+            "id": "indicator--eedd2504-642c-4711-b39e-6e65e667ebcd",
+            "created_by_ref": "identity--8e112e72-aa8f-4190-a359-28a9abae2896",
+            "created": "2023-05-31T22:05:08.000Z",
+            "modified": "2023-05-31T22:05:08.000Z",
+            "name": "sd.php",
+            "object_marking_refs": [
+                "marking-definition--94868c89-83c2-464b-929b-a1a8aa3c8487"
+            ],
+            "description": "This sample is an obfuscated PHP interactive webshell. This webshell is encoded and obfuscated using rot13, gzinflate and base64 as seen in the following code: \u201ceval(str_rot13(gzinflate(str_rot13(base64_decode(($sym))))));\u201d The obfuscated code is a string and is stored in the $sym variable from where it is read and decoded upon execution (Figure 1). The webshell requires the password \"pass\" for authentication and uses the string \u201c$xyn='tunafeesh';\u201d as a cookie to authenticate.\r\n\r\nThis webshell enumerates the local system it infects including the operating system, current user, directories, files and permissions. The webshell has the ability to create, rename, and delete files and directories. Furthermore, it has the ability to upload additional files to the affected webserver, run in Safe Mode and execute commands via cmd.exe (Figure 2). The webshell provides a Graphical User Interface (GUI) to the operator to perform these operations on the infected machine.\r\n\r\n---Notable Strings Begin---\r\neval(str_rot13(gzinflate(str_rot13(base64_decode(($sym))))));\r\ntunafeesh\r\npass\r\nTubagusNM\r\nxaisyndicate\r\ngaruda tersakti\r\ncon7ext_shell\r\nb374k shell\r\nX0MB13\r\nX0MB13@REBORN.COM\r\nhttp://www.twitter.com/X0MB13_\r\nhttp://www.fb.com/xombie.xombie.7\r\nonClick=\"xyn\r\n---Notable Strings End---",
+            "indicator_types": [
+                "malicious-activity"
+            ],
+            "pattern": " 'namespace'='CISA_Consolidated.yara' rule_name=CISA_10443863_01 rule_content=rule CISA_10443863_01 : backdoor remote_access_trojan webshell exploitation information_gathering remote_access accesses_remote_machines anti_debugging captures_system_state_data controls_local_machine compromises_data_availability compromises_data_integrity fingerprints_host installs_other_components\n{\n\tmeta:\n\t\tAuthor = \"CISA Code & Media Analysis\"\n\t\tIncident = \"10443863\"\n\t\tDate = \"2023-05-11\"\n\t\tLast_Modified = \"20230522_1200\"\n\t\tActor = \"n/a\"\n\t\tFamily = \"n/a\"\n\t\tCapabilities = \"accesses-remote-machines anti-debugging captures-system-state-data controls-local-machine compromises-data-availability compromises-data-integrity fingerprints-host installs-other-components\"\n\t\tMalware_Type = \"backdoor remote-access-trojan webshell\"\n\t\tTool_Type = \"exploitation information-gathering remote-access\"\n\t\tDescription = \"Detects obfuscated and deobfuscated interactive PHP webshell samples\"\n\t\tSHA256 = \"ea98368f6ecb5281654a6a9e4c649ef9b53860f1ee32340145b61e0e42e1072a\"\n\tstrings:\n\t\t$e0 = { 65 76 61 6c }\n\t\t$e1 = { 72 6f 74 31 33 }\n\t\t$e2 = { 62 61 73 65 36 34 }\n\t\t$e3 = { 67 7a 69 6e 66 6c 61 74 65 }\n\t\t$e4 = { 73 68 65 6c 6c }\n\t\t$e5 = { 78 61 69 73 79 6e 64 69 63 61 74 65 }\n\t\t$e6 = { 54 75 62 61 67 75 73 4e 4d }\n\t\t$s0 = { 58 30 4d 42 31 33 }\n\t\t$s1 = { 74 75 6e 61 66 65 65 73 68 }\n\t\t$s2 = { 70 61 73 73 77 6f 72 64 }\n\t\t$s3 = { 6f 6e ( 63 | 43 ) 6c 69 63 6b 3d }\n\t\t$s4 = { 6a 61 76 61 73 63 72 69 70 74 3a 78 79 6e }\n\tcondition:\n\t\t(6 of ($e*)) or (3 of ($s*))\n}\n",
+            "pattern_type": "yara",
+            "valid_from": "2023-06-06T13:15:51.611862Z"
+        },
+        {
+            "type": "malware-analysis",
+            "spec_version": "2.1",
+            "id": "malware-analysis--d6e18a01-5048-4c35-880a-53932af421e9",
+            "created_by_ref": "identity--8e112e72-aa8f-4190-a359-28a9abae2896",
+            "created": "2023-05-31T22:05:08.000Z",
+            "modified": "2023-05-31T22:05:08.000Z",
+            "product": "eset",
+            "object_marking_refs": [
+                "marking-definition--94868c89-83c2-464b-929b-a1a8aa3c8487"
+            ],
+            "result_name": "PHP/Agent.NPM trojan",
+            "result": "unknown",
+            "sample_ref": "file--da38c7f9-5935-5680-8bd6-08cf5f388735"
+        },
+        {
+            "type": "malware",
+            "spec_version": "2.1",
+            "id": "malware--c08dff4f-1409-4a8e-9694-d172c0387abb",
+            "created_by_ref": "identity--8e112e72-aa8f-4190-a359-28a9abae2896",
+            "created": "2023-05-31T22:05:08.000Z",
+            "modified": "2023-05-31T22:05:08.000Z",
+            "object_marking_refs": [
+                "marking-definition--94868c89-83c2-464b-929b-a1a8aa3c8487"
+            ],
+            "description": "This sample is an obfuscated PHP interactive webshell. This webshell is encoded and obfuscated using rot13, gzinflate and base64 as seen in the following code: \u201ceval(str_rot13(gzinflate(str_rot13(base64_decode(($sym))))));\u201d The obfuscated code is a string and is stored in the $sym variable from where it is read and decoded upon execution (Figure 1). The webshell requires the password \"pass\" for authentication and uses the string \u201c$xyn='tunafeesh';\u201d as a cookie to authenticate.\r\n\r\nThis webshell enumerates the local system it infects including the operating system, current user, directories, files and permissions. The webshell has the ability to create, rename, and delete files and directories. Furthermore, it has the ability to upload additional files to the affected webserver, run in Safe Mode and execute commands via cmd.exe (Figure 2). The webshell provides a Graphical User Interface (GUI) to the operator to perform these operations on the infected machine.\r\n\r\n---Notable Strings Begin---\r\neval(str_rot13(gzinflate(str_rot13(base64_decode(($sym))))));\r\ntunafeesh\r\npass\r\nTubagusNM\r\nxaisyndicate\r\ngaruda tersakti\r\ncon7ext_shell\r\nb374k shell\r\nX0MB13\r\nX0MB13@REBORN.COM\r\nhttp://www.twitter.com/X0MB13_\r\nhttp://www.fb.com/xombie.xombie.7\r\nonClick=\"xyn\r\n---Notable Strings End---",
+            "malware_types": [
+                "webshell",
+                "trojan"
+            ],
+            "is_family": false,
+            "sample_refs": [
+                "file--da38c7f9-5935-5680-8bd6-08cf5f388735"
+            ]
+        },
+        {
+            "type": "indicator",
+            "spec_version": "2.1",
+            "id": "indicator--d0200e3b-ff69-4aee-9bef-778824eddb18",
+            "created_by_ref": "identity--8e112e72-aa8f-4190-a359-28a9abae2896",
+            "created": "2023-05-31T22:05:08.000Z",
+            "modified": "2023-05-31T22:05:08.000Z",
+            "name": "sd.php",
+            "object_marking_refs": [
+                "marking-definition--94868c89-83c2-464b-929b-a1a8aa3c8487"
+            ],
+            "indicator_types": [
+                "malicious-activity"
+            ],
+            "pattern": "[file:hashes.'MD5'='f899d6cbe1be6395a0fa2a802b8eb579' OR file:hashes.'SHA-1'='e5f29cac0570665bc12f54a7e1894f139cc7b45e' OR file:hashes.'SHA-256'='ea98368f6ecb5281654a6a9e4c649ef9b53860f1ee32340145b61e0e42e1072a' OR file:hashes.'SHA-512'='6a9c23c3bd8a4b5f7301b80b7187ed6ae055a4e05e2b817800ddade99cb45e50bf3a96a57f9593aa8dfb49934ea48dba722ba3f4b0e8a8a634e6c86da335dcba']",
+            "pattern_type": "stix",
+            "pattern_version": "2.1",
+            "valid_from": "2023-06-06T13:15:51.618123Z"
+        },
+        {
+            "type": "file",
+            "spec_version": "2.1",
+            "id": "file--50198f6b-9e6d-5774-b473-ea7b4253772e",
+            "hashes": {
+                "MD5": "fcb8a6a264d05f1689c9dce5824b217d",
+                "SHA-1": "001e4906879e78d567a30502638233f34292504a",
+                "SHA-256": "6ce087b904af8a01aae73ac77d81822ad41799f89a5d301dce45191c897012aa",
+                "SHA-512": "703437c5742f343cabc6023698e031f0c4167252e9679d4e4fd13d9703f27de21faa7edf275bd9a39c4b2e454a83c43d555849ae61a0897ac1da9ed6be820d4d",
+                "SSDEEP": "3072:K+mYWYJo8+p87xbsTttEtizQhch+mYWYJo8+pO:K+mYDnhch+mYDD"
+            },
+            "size": 107843,
+            "name": "osker.aspx",
+            "object_marking_refs": [
+                "marking-definition--94868c89-83c2-464b-929b-a1a8aa3c8487"
+            ]
+        },
+        {
+            "type": "indicator",
+            "spec_version": "2.1",
+            "id": "indicator--71ce6046-b304-42f9-9d99-2ba11e16b34c",
+            "created_by_ref": "identity--8e112e72-aa8f-4190-a359-28a9abae2896",
+            "created": "2023-05-31T22:05:08.000Z",
+            "modified": "2023-05-31T22:05:08.000Z",
+            "name": "osker.aspx",
+            "object_marking_refs": [
+                "marking-definition--94868c89-83c2-464b-929b-a1a8aa3c8487"
+            ],
+            "description": "This sample is an ASP .NET webshell. The webshell code was padded with junk code for detection evasion. The beginning of the webshell code can be seen in Figure 3. It is possible to access the webshell interactively via browser to view the GUI as seen in Figure 4. \r\n\r\nThis webshell has the ability to enumerate drive name and type, software, operating system versions, processes, and users, and has ability to copy, create and delete files, directories and databases. Furthermore, this webshell is able to upload, download, run and execute commands using cmd.exe and sqlcmd.exe. This webshell has the ability to interact with and manipulate SQL databases. Furthermore, this webshell uses Windows Management Instrumentation (WMI) Management Objects to query processes, users and network domains. It is also able to encode and decode data using base64.\r\n \r\n---Notable Strings Begin---\r\nosker\r\n321\r\n<%@ Page Language=\"C#\"\r\nbase64Decode\r\nSelect * from Win32_Process\r\nSelect * from Win32_Process Where ProcessID\r\nAdd_Table_Row(tbl, \"Server IP\", Request.ServerVariables[\"LOCAL_ADDR\"]);\r\nAdd_Table_Row(tbl, \"Host Name\", Dns.GetHostName() );//Environment.MachineName);\r\nAdd_Table_Row(tbl, \"IIS Version\", Request.ServerVariables[\"SERVER_SOFTWARE\"]);\r\nAdd_Table_Row(tbl, \"IIS APPPOOL Identity\", Environment.UserName);\r\nAdd_Table_Row(tbl, \"OS Version\", Environment.OSVersion.ToString());\r\nmyconn = new SqlConnection(connections.Text);\r\nmyconn.Open();\r\nstring command = query;\r\nmycomm = new SqlCommand(command, myconn);\r\nSqlDataReader dr = mycomm.ExecuteReader();\r\nstring query = \"Select * from Win32_Process Where ProcessID = \\\"\" + processName + \"\\\"\";\r\nManagementObjectSearcher searcher = new ManagementObjectSearcher(query);\r\nManagementObjectCollection processList = searcher.Get();\r\nManagementObjectSearcher QS=new ManagementObjectSearcher(new SelectQuery(query));\r\n---Notable Strings End---",
+            "indicator_types": [
+                "malicious-activity"
+            ],
+            "pattern": " 'namespace'='CISA_Consolidated.yara' rule_name=CISA_10443863_02 rule_content=rule CISA_10443863_02 : backdoor remote_access_trojan webshell exploitation information_gathering remote_access accesses_remote_machines anti_debugging captures_system_state_data controls_local_machine compromises_data_availability compromises_data_integrity fingerprints_host installs_other_components\n{\n\tmeta:\n\t\tAuthor = \"CISA Code & Media Analysis\"\n\t\tIncident = \"10443863\"\n\t\tDate = \"2023-05-11\"\n\t\tLast_Modified = \"20230522_1200\"\n\t\tActor = \"n/a\"\n\t\tFamily = \"n/a\"\n\t\tCapabilities = \"accesses-remote-machines anti-debugging captures-system-state-data controls-local-machine compromises-data-availability compromises-data-integrity fingerprints-host installs-other-components\"\n\t\tMalware_Type = \"backdoor remote-access-trojan webshell\"\n\t\tTool_Type = \"exploitation information-gathering remote-access\"\n\t\tDescription = \"Detects interactive ASP NET webshell samples\"\n\t\tSHA256 = \"ea98368f6ecb5281654a6a9e4c649ef9b53860f1ee32340145b61e0e42e1072a\"\n\tstrings:\n\t\t$s0 = { 3c 25 40 20 50 61 67 65 20 4c 61 6e 67 75 61 67 65 3d 22 43 23 22 }\n\t\t$s1 = { 62 61 73 65 36 34 ( 44 | 64 ) 65 63 6f 64 65 }\n\t\t$s2 = { 53 65 6c 65 63 74 20 2a 20 66 72 6f 6d 20 57 69 6e 33 32 5f 50 72 6f 63 65 73 73 }\n\t\t$s3 = { 53 45 4c 45 43 54 20 2a 20 46 52 4f 4d }\n\t\t$s4 = { 73 71 6c 63 6d 64 2e 65 78 65 }\n\t\t$s5 = { 63 6d 64 2e 65 78 65 }\n\t\t$s6 = { 49 49 53 20 56 65 72 73 69 6f 6e }\n\t\t$s7 = { 43 72 65 61 74 65 4e 6f 57 69 6e 64 6f 77 }\n\tcondition:\n\t\tall of them\n}\n",
+            "pattern_type": "yara",
+            "valid_from": "2023-06-06T13:15:51.651013Z"
+        },
+        {
+            "type": "malware-analysis",
+            "spec_version": "2.1",
+            "id": "malware-analysis--9b1f149d-4a81-4de0-aa88-045f69e0bafb",
+            "created_by_ref": "identity--8e112e72-aa8f-4190-a359-28a9abae2896",
+            "created": "2023-05-31T22:05:08.000Z",
+            "modified": "2023-05-31T22:05:08.000Z",
+            "product": "ikarus",
+            "object_marking_refs": [
+                "marking-definition--94868c89-83c2-464b-929b-a1a8aa3c8487"
+            ],
+            "result_name": "Trojan.ASP.Agent",
+            "result": "unknown",
+            "sample_ref": "file--50198f6b-9e6d-5774-b473-ea7b4253772e"
+        },
+        {
+            "type": "malware-analysis",
+            "spec_version": "2.1",
+            "id": "malware-analysis--2c414f3f-4a81-43e3-a0f9-1dc2a1be0049",
+            "created_by_ref": "identity--8e112e72-aa8f-4190-a359-28a9abae2896",
+            "created": "2023-05-31T22:05:08.000Z",
+            "modified": "2023-05-31T22:05:08.000Z",
+            "product": "mcafee",
+            "object_marking_refs": [
+                "marking-definition--94868c89-83c2-464b-929b-a1a8aa3c8487"
+            ],
+            "result_name": "ASP/Backdoor.i",
+            "result": "unknown",
+            "sample_ref": "file--50198f6b-9e6d-5774-b473-ea7b4253772e"
+        },
+        {
+            "type": "malware-analysis",
+            "spec_version": "2.1",
+            "id": "malware-analysis--8b50cb9f-8257-4788-ad38-d70f93af8544",
+            "created_by_ref": "identity--8e112e72-aa8f-4190-a359-28a9abae2896",
+            "created": "2023-05-31T22:05:08.000Z",
+            "modified": "2023-05-31T22:05:08.000Z",
+            "product": "varist",
+            "object_marking_refs": [
+                "marking-definition--94868c89-83c2-464b-929b-a1a8aa3c8487"
+            ],
+            "result_name": "JS/Agent.AIW",
+            "result": "unknown",
+            "sample_ref": "file--50198f6b-9e6d-5774-b473-ea7b4253772e"
+        },
+        {
+            "type": "malware",
+            "spec_version": "2.1",
+            "id": "malware--2fe90590-70d1-4f78-a562-40573963354e",
+            "created_by_ref": "identity--8e112e72-aa8f-4190-a359-28a9abae2896",
+            "created": "2023-05-31T22:05:08.000Z",
+            "modified": "2023-05-31T22:05:08.000Z",
+            "object_marking_refs": [
+                "marking-definition--94868c89-83c2-464b-929b-a1a8aa3c8487"
+            ],
+            "description": "This sample is an ASP .NET webshell. The webshell code was padded with junk code for detection evasion. The beginning of the webshell code can be seen in Figure 3. It is possible to access the webshell interactively via browser to view the GUI as seen in Figure 4. \r\n\r\nThis webshell has the ability to enumerate drive name and type, software, operating system versions, processes, and users, and has ability to copy, create and delete files, directories and databases. Furthermore, this webshell is able to upload, download, run and execute commands using cmd.exe and sqlcmd.exe. This webshell has the ability to interact with and manipulate SQL databases. Furthermore, this webshell uses Windows Management Instrumentation (WMI) Management Objects to query processes, users and network domains. It is also able to encode and decode data using base64.\r\n \r\n---Notable Strings Begin---\r\nosker\r\n321\r\n<%@ Page Language=\"C#\"\r\nbase64Decode\r\nSelect * from Win32_Process\r\nSelect * from Win32_Process Where ProcessID\r\nAdd_Table_Row(tbl, \"Server IP\", Request.ServerVariables[\"LOCAL_ADDR\"]);\r\nAdd_Table_Row(tbl, \"Host Name\", Dns.GetHostName() );//Environment.MachineName);\r\nAdd_Table_Row(tbl, \"IIS Version\", Request.ServerVariables[\"SERVER_SOFTWARE\"]);\r\nAdd_Table_Row(tbl, \"IIS APPPOOL Identity\", Environment.UserName);\r\nAdd_Table_Row(tbl, \"OS Version\", Environment.OSVersion.ToString());\r\nmyconn = new SqlConnection(connections.Text);\r\nmyconn.Open();\r\nstring command = query;\r\nmycomm = new SqlCommand(command, myconn);\r\nSqlDataReader dr = mycomm.ExecuteReader();\r\nstring query = \"Select * from Win32_Process Where ProcessID = \\\"\" + processName + \"\\\"\";\r\nManagementObjectSearcher searcher = new ManagementObjectSearcher(query);\r\nManagementObjectCollection processList = searcher.Get();\r\nManagementObjectSearcher QS=new ManagementObjectSearcher(new SelectQuery(query));\r\n---Notable Strings End---",
+            "malware_types": [
+                "trojan",
+                "backdoor",
+                "webshell"
+            ],
+            "is_family": false,
+            "sample_refs": [
+                "file--50198f6b-9e6d-5774-b473-ea7b4253772e"
+            ]
+        },
+        {
+            "type": "indicator",
+            "spec_version": "2.1",
+            "id": "indicator--b890bef3-aeab-4b01-b881-5869f280e8af",
+            "created_by_ref": "identity--8e112e72-aa8f-4190-a359-28a9abae2896",
+            "created": "2023-05-31T22:05:08.000Z",
+            "modified": "2023-05-31T22:05:08.000Z",
+            "name": "osker.aspx",
+            "object_marking_refs": [
+                "marking-definition--94868c89-83c2-464b-929b-a1a8aa3c8487"
+            ],
+            "indicator_types": [
+                "malicious-activity"
+            ],
+            "pattern": "[file:hashes.'MD5'='fcb8a6a264d05f1689c9dce5824b217d' OR file:hashes.'SHA-1'='001e4906879e78d567a30502638233f34292504a' OR file:hashes.'SHA-256'='6ce087b904af8a01aae73ac77d81822ad41799f89a5d301dce45191c897012aa' OR file:hashes.'SHA-512'='703437c5742f343cabc6023698e031f0c4167252e9679d4e4fd13d9703f27de21faa7edf275bd9a39c4b2e454a83c43d555849ae61a0897ac1da9ed6be820d4d']",
+            "pattern_type": "stix",
+            "pattern_version": "2.1",
+            "valid_from": "2023-06-06T13:15:51.655084Z"
+        },
+        {
+            "type": "file",
+            "spec_version": "2.1",
+            "id": "file--76d1cc65-cc8c-59b2-a011-050f060bac49",
+            "hashes": {
+                "MD5": "71323c956317b6b2c8e4ed4595ccfe5a",
+                "SHA-1": "7ebd98f97f61cabff05438dfac34d0331ce233aa",
+                "SHA-256": "b63c95300c8e36b5e6d3393da12931683796f88fd4601ba8364658b4d12ac05b",
+                "SHA-512": "2da3716aab9c9a8a85705c1372c4d75250dc021caa4f3b7566f6c142bdb3a45a063ec5f343b15b9be6056890768e80e7512f6ddbb86de178c475a160f56c0dad",
+                "SSDEEP": "3072:XEFKnpDtdIftAIe66rOqhTG0t7x2IftAIe66rOqhTG0:XEyJXmtQTO+ymtQTO+"
+            },
+            "size": 163840,
+            "name": "App_Web_jl37rjxu.dll",
+            "object_marking_refs": [
+                "marking-definition--94868c89-83c2-464b-929b-a1a8aa3c8487"
+            ]
+        },
+        {
+            "type": "indicator",
+            "spec_version": "2.1",
+            "id": "indicator--e6e8f02e-3818-4c7f-b449-8aedcd42c39d",
+            "created_by_ref": "identity--8e112e72-aa8f-4190-a359-28a9abae2896",
+            "created": "2023-05-31T22:05:08.000Z",
+            "modified": "2023-05-31T22:05:08.000Z",
+            "name": "App_Web_jl37rjxu.dll",
+            "object_marking_refs": [
+                "marking-definition--94868c89-83c2-464b-929b-a1a8aa3c8487"
+            ],
+            "description": "This is a 32-bit .NET Dynamic-Link Library (DLL) file. This sample is a ASP .NET webshell and is related to the osker.aspx file. These webshells may affect Microsoft Exchange Servers and IIS services exploited by the ProxyLogon vulnerability. This sample is a .NET DLL file that is created by the ASP.NET Runtime when ASPX script is seen for the first time on the system. The capabilities and functions are identical to the osker.aspx file.",
+            "indicator_types": [
+                "malicious-activity"
+            ],
+            "pattern": " 'namespace'='CISA_Consolidated.yara' rule_name=CISA_10443863_03 rule_content=rule CISA_10443863_03 : backdoor remote_access_trojan webshell exploitation information_gathering remote_access accesses_remote_machines anti_debugging captures_system_state_data controls_local_machine compromises_data_availability compromises_data_integrity fingerprints_host installs_other_components\n{\n\tmeta:\n\t\tAuthor = \"CISA Code & Media Analysis\"\n\t\tIncident = \"10443863\"\n\t\tDate = \"2023-05-16\"\n\t\tLast_Modified = \"20230605_1500\"\n\t\tActor = \"n/a\"\n\t\tFamily = \"n/a\"\n\t\tCapabilities = \"accesses-remote-machines anti-debugging captures-system-state-data controls-local-machine compromises-data-availability compromises-data-integrity fingerprints-host installs-other-components\"\n\t\tMalware_Type = \"backdoor remote-access-trojan webshell\"\n\t\tTool_Type = \"exploitation information-gathering remote-access\"\n\t\tDescription = \"Detects .NET DLL webshell samples\"\n\t\tSHA256 = \"b63c95300c8e36b5e6d3393da12931683796f88fd4601ba8364658b4d12ac05b\"\n\tstrings:\n\t\t$s0 = { 53 00 65 00 6c 00 65 00 63 00 74 00 20 00 2a 00 20 00 66 00 72 00 6f 00 6d 00 20 00 57 00 69 00 6e 00 33 00 32 00 5f 00 50 00 72 00 6f 00 63 00 65 00 73 00 73 }\n\t\t$s1 = { 62 61 73 65 36 34 ( 44 | 64 ) 65 63 6f 64 65 }\n\t\t$s2 = { 53 00 45 00 4c 00 45 00 43 00 54 00 20 00 2a 00 20 00 46 00 52 00 4f 00 4d }\n\t\t$s3 = { 49 00 49 00 53 00 20 00 41 00 50 00 50 00 50 00 4f 00 4f 00 4c }\n\t\t$s4 = { 4d 61 6e 61 67 65 6d 65 6e 74 4f 62 6a 65 63 74 }\n\t\t$s5 = { 43 72 65 61 74 65 4e 6f 57 69 6e 64 6f 77 }\n\t\t$s6 = { 73 71 6c 71 75 65 72 79 }\n\tcondition:\n\t\tall of them\n}\n",
+            "pattern_type": "yara",
+            "valid_from": "2023-06-06T13:15:51.673529Z"
+        },
+        {
+            "type": "malware-analysis",
+            "spec_version": "2.1",
+            "id": "malware-analysis--306d302c-1019-4ca5-a6e3-3945668aa292",
+            "created_by_ref": "identity--8e112e72-aa8f-4190-a359-28a9abae2896",
+            "created": "2023-05-31T22:05:08.000Z",
+            "modified": "2023-05-31T22:05:08.000Z",
+            "product": "antiy",
+            "object_marking_refs": [
+                "marking-definition--94868c89-83c2-464b-929b-a1a8aa3c8487"
+            ],
+            "result_name": "Trojan[Backdoor]/ASP.WebShell",
+            "result": "unknown",
+            "sample_ref": "file--76d1cc65-cc8c-59b2-a011-050f060bac49"
+        },
+        {
+            "type": "malware-analysis",
+            "spec_version": "2.1",
+            "id": "malware-analysis--5a0f74e2-8174-4914-aa35-1b251675cfaa",
+            "created_by_ref": "identity--8e112e72-aa8f-4190-a359-28a9abae2896",
+            "created": "2023-05-31T22:05:08.000Z",
+            "modified": "2023-05-31T22:05:08.000Z",
+            "product": "avira",
+            "object_marking_refs": [
+                "marking-definition--94868c89-83c2-464b-929b-a1a8aa3c8487"
+            ],
+            "result_name": "BDS/Redcap.euknj",
+            "result": "unknown",
+            "sample_ref": "file--76d1cc65-cc8c-59b2-a011-050f060bac49"
+        },
+        {
+            "type": "malware-analysis",
+            "spec_version": "2.1",
+            "id": "malware-analysis--82259c72-5c3b-4622-b323-fae7f829de8a",
+            "created_by_ref": "identity--8e112e72-aa8f-4190-a359-28a9abae2896",
+            "created": "2023-05-31T22:05:08.000Z",
+            "modified": "2023-05-31T22:05:08.000Z",
+            "product": "bitdefender",
+            "object_marking_refs": [
+                "marking-definition--94868c89-83c2-464b-929b-a1a8aa3c8487"
+            ],
+            "result_name": "Trojan.Generic.33706396",
+            "result": "unknown",
+            "sample_ref": "file--76d1cc65-cc8c-59b2-a011-050f060bac49"
+        },
+        {
+            "type": "malware-analysis",
+            "spec_version": "2.1",
+            "id": "malware-analysis--5f68fe00-c1d9-4f67-94e0-d38d6814e4c0",
+            "created_by_ref": "identity--8e112e72-aa8f-4190-a359-28a9abae2896",
+            "created": "2023-05-31T22:05:08.000Z",
+            "modified": "2023-05-31T22:05:08.000Z",
+            "product": "emsisoft",
+            "object_marking_refs": [
+                "marking-definition--94868c89-83c2-464b-929b-a1a8aa3c8487"
+            ],
+            "result_name": "Trojan.Generic.33706396 (B)",
+            "result": "unknown",
+            "sample_ref": "file--76d1cc65-cc8c-59b2-a011-050f060bac49"
+        },
+        {
+            "type": "malware-analysis",
+            "spec_version": "2.1",
+            "id": "malware-analysis--6ea0bc02-570b-4b10-be9a-82d8f44e11cb",
+            "created_by_ref": "identity--8e112e72-aa8f-4190-a359-28a9abae2896",
+            "created": "2023-05-31T22:05:08.000Z",
+            "modified": "2023-05-31T22:05:08.000Z",
+            "product": "mcafee",
+            "object_marking_refs": [
+                "marking-definition--94868c89-83c2-464b-929b-a1a8aa3c8487"
+            ],
+            "result_name": "RDN/Generic BackDoor",
+            "result": "unknown",
+            "sample_ref": "file--76d1cc65-cc8c-59b2-a011-050f060bac49"
+        },
+        {
+            "type": "malware-analysis",
+            "spec_version": "2.1",
+            "id": "malware-analysis--8539fb27-0be2-4526-b21f-cf78bb5dd834",
+            "created_by_ref": "identity--8e112e72-aa8f-4190-a359-28a9abae2896",
+            "created": "2023-05-31T22:05:08.000Z",
+            "modified": "2023-05-31T22:05:08.000Z",
+            "product": "zillya",
+            "object_marking_refs": [
+                "marking-definition--94868c89-83c2-464b-929b-a1a8aa3c8487"
+            ],
+            "result_name": "Backdoor.WebShell.Script.653",
+            "result": "unknown",
+            "sample_ref": "file--76d1cc65-cc8c-59b2-a011-050f060bac49"
+        },
+        {
+            "type": "malware",
+            "spec_version": "2.1",
+            "id": "malware--b0fbc7df-4fd8-469e-ac6d-84455665d90b",
+            "created_by_ref": "identity--8e112e72-aa8f-4190-a359-28a9abae2896",
+            "created": "2023-05-31T22:05:08.000Z",
+            "modified": "2023-05-31T22:05:08.000Z",
+            "object_marking_refs": [
+                "marking-definition--94868c89-83c2-464b-929b-a1a8aa3c8487"
+            ],
+            "description": "This is a 32-bit .NET Dynamic-Link Library (DLL) file. This sample is a ASP .NET webshell and is related to the osker.aspx file. These webshells may affect Microsoft Exchange Servers and IIS services exploited by the ProxyLogon vulnerability. This sample is a .NET DLL file that is created by the ASP.NET Runtime when ASPX script is seen for the first time on the system. The capabilities and functions are identical to the osker.aspx file.",
+            "malware_types": [
+                "backdoor",
+                "trojan",
+                "webshell"
+            ],
+            "is_family": false,
+            "sample_refs": [
+                "file--76d1cc65-cc8c-59b2-a011-050f060bac49"
+            ]
+        },
+        {
+            "type": "indicator",
+            "spec_version": "2.1",
+            "id": "indicator--d13dc289-3617-4106-a1f6-155de28bdb28",
+            "created_by_ref": "identity--8e112e72-aa8f-4190-a359-28a9abae2896",
+            "created": "2023-05-31T22:05:08.000Z",
+            "modified": "2023-05-31T22:05:08.000Z",
+            "name": "App_Web_jl37rjxu.dll",
+            "object_marking_refs": [
+                "marking-definition--94868c89-83c2-464b-929b-a1a8aa3c8487"
+            ],
+            "indicator_types": [
+                "malicious-activity"
+            ],
+            "pattern": "[file:hashes.'MD5'='71323c956317b6b2c8e4ed4595ccfe5a' OR file:hashes.'SHA-1'='7ebd98f97f61cabff05438dfac34d0331ce233aa' OR file:hashes.'SHA-256'='b63c95300c8e36b5e6d3393da12931683796f88fd4601ba8364658b4d12ac05b' OR file:hashes.'SHA-512'='2da3716aab9c9a8a85705c1372c4d75250dc021caa4f3b7566f6c142bdb3a45a063ec5f343b15b9be6056890768e80e7512f6ddbb86de178c475a160f56c0dad']",
+            "pattern_type": "stix",
+            "pattern_version": "2.1",
+            "valid_from": "2023-06-06T13:15:51.678617Z"
+        },
+        {
+            "type": "relationship",
+            "spec_version": "2.1",
+            "id": "relationship--d7bc978d-ecab-4c75-9c69-d788d0836cec",
+            "created_by_ref": "identity--8e112e72-aa8f-4190-a359-28a9abae2896",
+            "created": "2023-05-31T22:05:08.000Z",
+            "modified": "2023-05-31T22:05:08.000Z",
+            "relationship_type": "related-to",
+            "object_marking_refs": [
+                "marking-definition--94868c89-83c2-464b-929b-a1a8aa3c8487"
+            ],
+            "source_ref": "malware--2fe90590-70d1-4f78-a562-40573963354e",
+            "target_ref": "malware--b0fbc7df-4fd8-469e-ac6d-84455665d90b"
+        },
+        {
+            "type": "relationship",
+            "spec_version": "2.1",
+            "id": "relationship--aeef36f1-e902-462e-b136-31348e836ca2",
+            "created_by_ref": "identity--8e112e72-aa8f-4190-a359-28a9abae2896",
+            "created": "2023-05-31T22:05:08.000Z",
+            "modified": "2023-05-31T22:05:08.000Z",
+            "relationship_type": "related-to",
+            "object_marking_refs": [
+                "marking-definition--94868c89-83c2-464b-929b-a1a8aa3c8487"
+            ],
+            "source_ref": "malware--b0fbc7df-4fd8-469e-ac6d-84455665d90b",
+            "target_ref": "malware--2fe90590-70d1-4f78-a562-40573963354e"
+        },
+        {
+            "type": "report",
+            "spec_version": "2.1",
+            "id": "report--473f334f-c6bd-4663-a160-97cd6ec8656d",
+            "created_by_ref": "identity--8e112e72-aa8f-4190-a359-28a9abae2896",
+            "created": "2023-05-31T22:05:08.000Z",
+            "modified": "2023-06-06T13:15:51.692801Z",
+            "name": "MAR-10443863.r1.v1",
+            "object_marking_refs": [
+                "marking-definition--94868c89-83c2-464b-929b-a1a8aa3c8487"
+            ],
+            "description": "CISA received three files for analysis. The files included three webshells written in PHP: Hypertext Preprocessor (PHP), Active Server Pages Extended (ASPX), and .NET Dynamic-Link Library (DLL). The sample \u201csd.php\u201d is highly obfuscated and uses rot13 algorithm, zlib for compression and base64 encoding for obfuscation. The \u201cosker.aspx\u201d webshell code was padded with junk code. The .NET DLL webshell is a .NET compiled version of osker.aspx. The samples are interactive webshells and have the ability to upload and manage files, create directories and files, and execute commands on the target machine. ",
+            "report_types": [
+                "observed-data",
+                "malware",
+                "indicator"
+            ],
+            "published": "2023-05-31T22:05:08Z",
+            "object_refs": [
+                "identity--8e112e72-aa8f-4190-a359-28a9abae2896",
+                "file--da38c7f9-5935-5680-8bd6-08cf5f388735",
+                "indicator--eedd2504-642c-4711-b39e-6e65e667ebcd",
+                "malware-analysis--d6e18a01-5048-4c35-880a-53932af421e9",
+                "malware--c08dff4f-1409-4a8e-9694-d172c0387abb",
+                "indicator--d0200e3b-ff69-4aee-9bef-778824eddb18",
+                "file--50198f6b-9e6d-5774-b473-ea7b4253772e",
+                "indicator--71ce6046-b304-42f9-9d99-2ba11e16b34c",
+                "malware-analysis--9b1f149d-4a81-4de0-aa88-045f69e0bafb",
+                "malware-analysis--2c414f3f-4a81-43e3-a0f9-1dc2a1be0049",
+                "malware-analysis--8b50cb9f-8257-4788-ad38-d70f93af8544",
+                "malware--2fe90590-70d1-4f78-a562-40573963354e",
+                "indicator--b890bef3-aeab-4b01-b881-5869f280e8af",
+                "file--76d1cc65-cc8c-59b2-a011-050f060bac49",
+                "indicator--e6e8f02e-3818-4c7f-b449-8aedcd42c39d",
+                "malware-analysis--306d302c-1019-4ca5-a6e3-3945668aa292",
+                "malware-analysis--5a0f74e2-8174-4914-aa35-1b251675cfaa",
+                "malware-analysis--82259c72-5c3b-4622-b323-fae7f829de8a",
+                "malware-analysis--5f68fe00-c1d9-4f67-94e0-d38d6814e4c0",
+                "malware-analysis--6ea0bc02-570b-4b10-be9a-82d8f44e11cb",
+                "malware-analysis--8539fb27-0be2-4526-b21f-cf78bb5dd834",
+                "malware--b0fbc7df-4fd8-469e-ac6d-84455665d90b",
+                "indicator--d13dc289-3617-4106-a1f6-155de28bdb28",
+                "relationship--d7bc978d-ecab-4c75-9c69-d788d0836cec",
+                "relationship--aeef36f1-e902-462e-b136-31348e836ca2"
+            ]
+        }
+    ]
+}
