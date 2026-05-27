@@ -112,13 +112,16 @@ def collect(since, collect_all, delay, no_attachments):
 
             adir = advisory_dir(DATA_ROOT, advisory_id)
             write_html(DATA_ROOT, advisory_id, detail["raw_html"])
-            write_metadata(DATA_ROOT, advisory_id, {
-                k: v for k, v in record.items()
-                if k not in ("body_html", "raw_html")
-            })
+            write_metadata(
+                DATA_ROOT,
+                advisory_id,
+                {k: v for k, v in record.items() if k not in ("body_html", "raw_html")},
+            )
 
             if not no_attachments and detail["attachment_urls"]:
-                saved = download_attachments(client, detail["attachment_urls"], adir, delay=delay)
+                saved = download_attachments(
+                    client, detail["attachment_urls"], adir, delay=delay
+                )
                 record["attachments"] = saved
 
             db_mod.insert_advisory(conn, record)
