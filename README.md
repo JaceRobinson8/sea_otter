@@ -1,5 +1,11 @@
 # sea-otter
 
+[![CI](https://github.com/JaceRobinson8/sea_otter/actions/workflows/ci.yml/badge.svg)](https://github.com/JaceRobinson8/sea_otter/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/JaceRobinson8/sea_otter/branch/main/graph/badge.svg)](https://codecov.io/gh/JaceRobinson8/sea_otter)
+[![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+
 Collects the CISA cybersecurity advisory dataset for offline analysis. Scrapes all four advisory types, downloads attachments (PDFs, STIX bundles, etc.), and snapshots the Known Exploited Vulnerabilities (KEV) catalog. Designed to run incrementally on a schedule.
 
 ## Collected data
