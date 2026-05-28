@@ -1,5 +1,5 @@
 import sqlite3
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 
@@ -47,7 +47,7 @@ def insert_advisory(conn: sqlite3.Connection, record: dict) -> None:
             "title": record.get("title"),
             "published": record.get("published"),
             "advisory_type": record.get("advisory_type"),
-            "collected_at": datetime.utcnow().isoformat(),
+            "collected_at": datetime.now(timezone.utc).isoformat(),
             "has_pdf": int(record.get("has_pdf", False)),
             "has_stix": int(record.get("has_stix", False)),
         },
