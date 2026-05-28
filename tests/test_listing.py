@@ -1,23 +1,15 @@
 """Tests for collector/listing.py — HTML parsing and pagination."""
 
-from datetime import date
-
-import httpx
-import respx
-
 from sea_otter.collector.listing import (
-    LISTING_URLS,
     _parse_date,
     _parse_ics_page,
     _parse_non_ics_page,
     _type_from_url,
-    iter_cybersecurity_advisories,
-    iter_ics_advisories,
 )
 from tests.fixtures import CYBERSECURITY_LISTING_PAGE, ICS_LISTING_PAGE
 
-
 # --- Unit tests: pure parsing helpers ---
+
 
 def test_parse_date_iso():
     assert _parse_date("2026-05-27") == "2026-05-27"
@@ -40,7 +32,10 @@ def test_type_from_url_alert():
 
 
 def test_type_from_url_cybersecurity_advisory():
-    assert _type_from_url("/news-events/cybersecurity-advisories/2026/05/20/aa26-140a") == "cybersecurity-advisory"
+    assert (
+        _type_from_url("/news-events/cybersecurity-advisories/2026/05/20/aa26-140a")
+        == "cybersecurity-advisory"
+    )
 
 
 def test_type_from_url_ics_advisory():
@@ -48,10 +43,14 @@ def test_type_from_url_ics_advisory():
 
 
 def test_type_from_url_ics_medical():
-    assert _type_from_url("/news-events/ics-medical-advisories/icsma-26-146-01") == "ics-medical-advisory"
+    assert (
+        _type_from_url("/news-events/ics-medical-advisories/icsma-26-146-01")
+        == "ics-medical-advisory"
+    )
 
 
 # --- Unit tests: HTML page parsers ---
+
 
 def test_parse_non_ics_page_count():
     items = _parse_non_ics_page(CYBERSECURITY_LISTING_PAGE)
@@ -63,8 +62,14 @@ def test_parse_non_ics_page_alert_fields():
     alert = next(i for i in items if i["advisory_type"] == "alert")
     assert alert["published"] == "2026-05-27"
     assert alert["title"] == "CISA Adds Three Known Exploited Vulnerabilities to Catalog"
-    assert alert["url"] == "https://www.cisa.gov/news-events/alerts/2026/05/27/cisa-adds-three-known-exploited-vulnerabilities-catalog"
-    assert alert["id"] == "news-events/alerts/2026/05/27/cisa-adds-three-known-exploited-vulnerabilities-catalog"
+    assert (
+        alert["url"]
+        == "https://www.cisa.gov/news-events/alerts/2026/05/27/cisa-adds-three-known-exploited-vulnerabilities-catalog"
+    )
+    assert (
+        alert["id"]
+        == "news-events/alerts/2026/05/27/cisa-adds-three-known-exploited-vulnerabilities-catalog"
+    )
 
 
 def test_parse_non_ics_page_advisory_fields():

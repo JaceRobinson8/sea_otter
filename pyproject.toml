@@ -26,7 +26,23 @@ packages = ["src/sea_otter"]
 dev = [
     "pytest>=8.0",
     "respx>=0.21",
+    "ruff>=0.4",
 ]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP"]
+# E501 line-length violations in string literals / HTML fixtures are harmless
+per-file-ignores = {"tests/fixtures.py" = ["E501"], "tests/test_listing.py" = ["E501"], "tests/test_storage.py" = ["E501"]}
+
+[tool.ruff.lint.extend-per-file-ignores]
+"src/sea_otter/collector/listing.py" = ["E501"]  # long HTTP header strings
+"src/sea_otter/collector/advisory.py" = ["E501"]
+"src/sea_otter/collector/downloader.py" = ["E501"]
+"src/sea_otter/cli.py" = ["E501"]
+"src/sea_otter/storage/db.py" = ["E501"]

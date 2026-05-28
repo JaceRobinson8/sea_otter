@@ -1,5 +1,6 @@
 """Scrape an individual CISA advisory page."""
 
+import logging
 import re
 from urllib.parse import urljoin, urlparse
 
@@ -8,12 +9,23 @@ from bs4 import BeautifulSoup
 
 from .listing import HEADERS
 
+log = logging.getLogger(__name__)
+
 BASE_URL = "https://www.cisa.gov"
 
 # File extensions we consider attachments worth downloading
 ATTACHMENT_EXTENSIONS = {
-    ".pdf", ".json", ".xml", ".stix", ".csv", ".zip", ".txt", ".yar", ".yara",
-    ".snort", ".sigma",
+    ".pdf",
+    ".json",
+    ".xml",
+    ".stix",
+    ".csv",
+    ".zip",
+    ".txt",
+    ".yar",
+    ".yara",
+    ".snort",
+    ".sigma",
 }
 
 
@@ -38,7 +50,7 @@ def scrape_advisory(client: httpx.Client, url: str) -> dict | None:
         resp = client.get(url, headers=HEADERS, timeout=30, follow_redirects=True)
         resp.raise_for_status()
     except httpx.HTTPError as exc:
-        print(f"  [advisory] HTTP error on {url}: {exc}")
+        log.warning("HTTP error on %s: %s", url, exc)
         return None
 
     soup = BeautifulSoup(resp.text, "html.parser")
@@ -59,7 +71,9 @@ def scrape_advisory(client: httpx.Client, url: str) -> dict | None:
 
     # Body HTML — grab the main content area
     body_html = ""
-    main = soup.find("main") or soup.find("article") or soup.find(id=re.compile(r"main|content", re.I))
+    main = (
+        soup.find("main") or soup.find("article") or soup.find(id=re.compile(r"main|content", re.I))
+    )
     if main:
         body_html = str(main)
     else:
@@ -81,9 +95,7 @@ def scrape_advisory(client: httpx.Client, url: str) -> dict | None:
             deduped.append(u)
 
     has_pdf = any(urlparse(u).path.lower().endswith(".pdf") for u in deduped)
-    has_stix = any(
-        urlparse(u).path.lower().endswith((".stix", ".json", ".xml")) for u in deduped
-    )
+    has_stix = any(urlparse(u).path.lower().endswith((".stix", ".json", ".xml")) for u in deduped)
 
     return {
         "title": title,

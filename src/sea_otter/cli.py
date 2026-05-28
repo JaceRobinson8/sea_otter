@@ -1,5 +1,6 @@
 """sea-otter CLI — CISA advisory dataset collector."""
 
+import logging
 import time
 from datetime import date, datetime
 from pathlib import Path
@@ -41,8 +42,13 @@ def _collect_stubs(client, since: date | None, delay: float) -> list[dict]:
 
 
 @click.group()
-def main():
+@click.option("-v", "--verbose", is_flag=True, default=False, help="Enable debug logging.")
+def main(verbose: bool):
     """sea-otter: collect CISA cybersecurity advisories."""
+    logging.basicConfig(
+        level=logging.DEBUG if verbose else logging.INFO,
+        format="%(levelname)s %(name)s: %(message)s",
+    )
 
 
 @main.command()
@@ -119,9 +125,7 @@ def collect(since, collect_all, delay, no_attachments):
             )
 
             if not no_attachments and detail["attachment_urls"]:
-                saved = download_attachments(
-                    client, detail["attachment_urls"], adir, delay=delay
-                )
+                saved = download_attachments(client, detail["attachment_urls"], adir, delay=delay)
                 record["attachments"] = saved
 
             db_mod.insert_advisory(conn, record)

@@ -1,5 +1,6 @@
 """Download file attachments with retry and deduplication."""
 
+import logging
 import time
 from pathlib import Path
 from urllib.parse import urlparse
@@ -7,6 +8,8 @@ from urllib.parse import urlparse
 import httpx
 
 from .listing import HEADERS
+
+log = logging.getLogger(__name__)
 
 MAX_RETRIES = 3
 RETRY_DELAY = 3.0
@@ -32,7 +35,9 @@ def download_file(client: httpx.Client, url: str, dest: Path, delay: float = 1.0
 
     for attempt in range(1, MAX_RETRIES + 1):
         try:
-            with client.stream("GET", url, headers=HEADERS, timeout=60, follow_redirects=True) as resp:
+            with client.stream(
+                "GET", url, headers=HEADERS, timeout=60, follow_redirects=True
+            ) as resp:
                 resp.raise_for_status()
                 with open(dest, "wb") as f:
                     for chunk in resp.iter_bytes(chunk_size=65536):
@@ -40,7 +45,7 @@ def download_file(client: httpx.Client, url: str, dest: Path, delay: float = 1.0
             time.sleep(delay)
             return True
         except httpx.HTTPError as exc:
-            print(f"  [download] Attempt {attempt}/{MAX_RETRIES} failed for {url}: {exc}")
+            log.warning("Attempt %d/%d failed for %s: %s", attempt, MAX_RETRIES, url, exc)
             if attempt < MAX_RETRIES:
                 time.sleep(RETRY_DELAY * attempt)
 

@@ -1,12 +1,15 @@
 """Scrape CISA advisory listing pages and yield advisory stubs."""
 
+import logging
 import re
 import time
+from collections.abc import Iterator
 from datetime import date, datetime
-from typing import Iterator
 
 import httpx
 from bs4 import BeautifulSoup
+
+log = logging.getLogger(__name__)
 
 HEADERS = {
     "User-Agent": (
@@ -102,13 +105,15 @@ def _parse_non_ics_page(html: str) -> list[dict]:
         if url in seen:
             continue
         seen.add(url)
-        results.append({
-            "id": _advisory_id(url),
-            "url": url,
-            "title": a.get_text(strip=True),
-            "published": _find_date_near(a),
-            "advisory_type": _type_from_url(href),
-        })
+        results.append(
+            {
+                "id": _advisory_id(url),
+                "url": url,
+                "title": a.get_text(strip=True),
+                "published": _find_date_near(a),
+                "advisory_type": _type_from_url(href),
+            }
+        )
     return results
 
 
@@ -122,13 +127,15 @@ def _parse_ics_page(html: str) -> list[dict]:
         if url in seen:
             continue
         seen.add(url)
-        results.append({
-            "id": _advisory_id(url),
-            "url": url,
-            "title": a.get_text(strip=True),
-            "published": _find_date_near(a),
-            "advisory_type": _type_from_url(href),
-        })
+        results.append(
+            {
+                "id": _advisory_id(url),
+                "url": url,
+                "title": a.get_text(strip=True),
+                "published": _find_date_near(a),
+                "advisory_type": _type_from_url(href),
+            }
+        )
     return results
 
 
@@ -146,7 +153,7 @@ def _iter_listing_pages(
             resp = client.get(url, headers=HEADERS, timeout=30, follow_redirects=True)
             resp.raise_for_status()
         except httpx.HTTPError as exc:
-            print(f"  [listing] HTTP error on {url}: {exc}")
+            log.warning("HTTP error on %s: %s", url, exc)
             break
 
         items = parse_fn(resp.text)
@@ -184,6 +191,4 @@ def iter_ics_advisories(
     delay: float = 1.5,
 ) -> Iterator[dict]:
     """Yield stubs from the ICS advisories listing (ICS advisories + ICS medical)."""
-    yield from _iter_listing_pages(
-        client, LISTING_URLS["ics"], _parse_ics_page, since, delay
-    )
+    yield from _iter_listing_pages(client, LISTING_URLS["ics"], _parse_ics_page, since, delay)

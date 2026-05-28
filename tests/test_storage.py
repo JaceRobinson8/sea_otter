@@ -1,16 +1,20 @@
 """Tests for storage/db.py and storage/filesystem.py."""
 
 import json
-import sqlite3
-from pathlib import Path
 
 import pytest
 
-from sea_otter.storage.db import get_connection, get_latest_date, get_stats, insert_advisory, is_collected
+from sea_otter.storage.db import (
+    get_connection,
+    get_latest_date,
+    get_stats,
+    insert_advisory,
+    is_collected,
+)
 from sea_otter.storage.filesystem import advisory_dir, attachment_path, write_html, write_metadata
 
-
 # --- DB tests ---
+
 
 @pytest.fixture
 def conn(tmp_path):
@@ -84,6 +88,7 @@ def test_get_connection_creates_db_file(tmp_path):
 
 # --- Filesystem tests ---
 
+
 @pytest.fixture
 def data_root(tmp_path):
     return tmp_path / "data"
@@ -91,7 +96,10 @@ def data_root(tmp_path):
 
 def test_advisory_dir_path(data_root):
     path = advisory_dir(data_root, "news-events/alerts/2026/05/27/some-slug")
-    assert path == data_root / "advisories" / "news-events" / "alerts" / "2026" / "05" / "27" / "some-slug"
+    assert (
+        path
+        == data_root / "advisories" / "news-events" / "alerts" / "2026" / "05" / "27" / "some-slug"
+    )
 
 
 def test_write_metadata_creates_file(data_root):
