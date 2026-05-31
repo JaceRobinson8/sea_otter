@@ -1,6 +1,7 @@
 !data/README.md
 .DS_Store
 data/
+/data_backup.zip
 
 # Python-generated files
 __pycache__/
