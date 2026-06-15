@@ -50,9 +50,7 @@ def _collect_stubs(client, since: date | None, delay: float) -> list[dict]:
 
 @app.callback()
 def _main(
-    verbose: Annotated[
-        bool, typer.Option("-v", "--verbose", help="Enable debug logging.")
-    ] = False,
+    verbose: Annotated[bool, typer.Option("-v", "--verbose", help="Enable debug logging.")] = False,
 ):
     """sea-otter: collect CISA cybersecurity advisories."""
     logging.basicConfig(
