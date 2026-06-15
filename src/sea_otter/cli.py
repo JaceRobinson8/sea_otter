@@ -4,9 +4,10 @@ import logging
 import time
 from datetime import date, datetime
 from pathlib import Path
+from typing import Annotated
 
-import click
 import httpx
+import typer
 from tqdm import tqdm
 
 from .collector.advisory import scrape_advisory
@@ -19,6 +20,12 @@ from .storage.filesystem import advisory_dir, write_html, write_metadata
 DATA_ROOT = Path(__file__).parent.parent.parent / "data"
 DB_PATH = DATA_ROOT / "sea_otter.db"
 
+app = typer.Typer(
+    help="sea-otter: collect CISA cybersecurity advisories.",
+    rich_markup_mode="rich",
+    no_args_is_help=True,
+)
+
 
 def _make_client() -> httpx.Client:
     return httpx.Client(http2=False)
@@ -27,23 +34,24 @@ def _make_client() -> httpx.Client:
 def _collect_stubs(client, since: date | None, delay: float) -> list[dict]:
     """Collect all advisory stubs from both listing feeds."""
     stubs = []
-    print("  Scanning cybersecurity advisories listing...")
+    typer.echo("  Scanning cybersecurity advisories listing...")
     for stub in iter_cybersecurity_advisories(client, since=since, delay=delay):
         stubs.append(stub)
-    print(f"    Found {len(stubs)} cybersecurity advisory stubs")
+    typer.echo(f"    Found {len(stubs)} cybersecurity advisory stubs")
 
     ics_start = len(stubs)
-    print("  Scanning ICS advisories listing...")
+    typer.echo("  Scanning ICS advisories listing...")
     for stub in iter_ics_advisories(client, since=since, delay=delay):
         stubs.append(stub)
-    print(f"    Found {len(stubs) - ics_start} ICS advisory stubs")
+    typer.echo(f"    Found {len(stubs) - ics_start} ICS advisory stubs")
 
     return stubs
 
 
-@click.group()
-@click.option("-v", "--verbose", is_flag=True, default=False, help="Enable debug logging.")
-def main(verbose: bool):
+@app.callback()
+def _main(
+    verbose: Annotated[bool, typer.Option("-v", "--verbose", help="Enable debug logging.")] = False,
+):
     """sea-otter: collect CISA cybersecurity advisories."""
     logging.basicConfig(
         level=logging.DEBUG if verbose else logging.INFO,
@@ -51,34 +59,26 @@ def main(verbose: bool):
     )
 
 
-@main.command()
-@click.option(
-    "--since",
-    default=None,
-    metavar="YYYY-MM-DD",
-    help="Only collect advisories published on or after this date. Defaults to last collected date.",
-)
-@click.option(
-    "--all",
-    "collect_all",
-    is_flag=True,
-    default=False,
-    help="Collect full history (ignores --since).",
-)
-@click.option(
-    "--delay",
-    default=1.5,
-    show_default=True,
-    type=float,
-    help="Seconds to wait between requests.",
-)
-@click.option(
-    "--no-attachments",
-    is_flag=True,
-    default=False,
-    help="Skip downloading PDF/attachment files.",
-)
-def collect(since, collect_all, delay, no_attachments):
+@app.command()
+def collect(
+    since: Annotated[
+        str | None,
+        typer.Option(
+            "--since",
+            metavar="YYYY-MM-DD",
+            help="Only collect advisories published on or after this date. Defaults to last collected date.",
+        ),
+    ] = None,
+    collect_all: Annotated[
+        bool, typer.Option("--all", help="Collect full history (ignores --since).")
+    ] = False,
+    delay: Annotated[
+        float, typer.Option("--delay", help="Seconds to wait between requests.")
+    ] = 1.5,
+    no_attachments: Annotated[
+        bool, typer.Option("--no-attachments", help="Skip downloading PDF/attachment files.")
+    ] = False,
+):
     """Collect CISA advisories. Resumes from where it left off (dedup via SQLite)."""
     DATA_ROOT.mkdir(parents=True, exist_ok=True)
     conn = db_mod.get_connection(DB_PATH)
@@ -91,11 +91,11 @@ def collect(since, collect_all, delay, no_attachments):
             last = db_mod.get_latest_date(conn)
             if last:
                 since_date = datetime.strptime(last, "%Y-%m-%d").date()
-                click.echo(f"Resuming from last collected date: {since_date}")
+                typer.echo(f"Resuming from last collected date: {since_date}")
 
     with _make_client() as client:
         stubs = _collect_stubs(client, since=since_date, delay=delay)
-        click.echo(f"\nTotal stubs: {len(stubs)}. Scraping new advisories...")
+        typer.echo(f"\nTotal stubs: {len(stubs)}. Scraping new advisories...")
 
         collected = 0
         skipped = 0
@@ -132,33 +132,37 @@ def collect(since, collect_all, delay, no_attachments):
             collected += 1
 
     conn.close()
-    click.echo(f"\nDone. collected={collected}, skipped(already_have)={skipped}")
+    typer.echo(f"\nDone. collected={collected}, skipped(already_have)={skipped}")
 
 
-@main.command("collect-kev")
+@app.command("collect-kev")
 def collect_kev():
     """Fetch and snapshot the CISA Known Exploited Vulnerabilities catalog."""
     kev_dir = DATA_ROOT / "kev"
     with _make_client() as client:
-        click.echo("Fetching KEV catalog...")
+        typer.echo("Fetching KEV catalog...")
         data = fetch_kev(client)
         save_kev_snapshot(data, kev_dir)
-    click.echo("Done.")
+    typer.echo("Done.")
 
 
-@main.command()
+@app.command()
 def status():
     """Show collection statistics."""
     if not DB_PATH.exists():
-        click.echo("No database found. Run `sea-otter collect` first.")
+        typer.echo("No database found. Run `sea-otter collect` first.")
         return
 
     conn = db_mod.get_connection(DB_PATH)
     stats = db_mod.get_stats(conn)
     conn.close()
 
-    click.echo(f"Total advisories : {stats['total']}")
-    click.echo(f"Date range       : {stats['oldest']} → {stats['newest']}")
-    click.echo("By type:")
+    typer.echo(f"Total advisories : {stats['total']}")
+    typer.echo(f"Date range       : {stats['oldest']} → {stats['newest']}")
+    typer.echo("By type:")
     for atype, cnt in stats["by_type"].items():
-        click.echo(f"  {atype:<40} {cnt}")
+        typer.echo(f"  {atype:<40} {cnt}")
+
+
+def main() -> None:
+    app()
